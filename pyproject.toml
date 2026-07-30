@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "topstepx-starter"
+version = "0.1.0"
+description = "Starter kit for the TopstepX API: REST + real-time SignalR market data, modular and easy to extend"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Topstep" }]
+dependencies = [
+    "httpx~=0.28",
+    "pysignalr~=1.3",
+    "python-dotenv~=1.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest~=8.3",
+    "pytest-asyncio~=0.25",
+]
+
+[project.urls]
+Repository = "https://github.com/thelton-cmd/topstepx-api-starter"
+
+[tool.setuptools.packages.find]
+include = ["topstepx*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
