@@ -1,0 +1,41 @@
+/* journal.css - the "Journal and session stats" panel (dashboard/static/features/journal.js). */
+
+.journal-btn.open { border-color: var(--muted); background: var(--panel-2); }
+section.journal-section[hidden] { display: none; }
+
+.journal .jr-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.journal .jr-status { font-size: 12px; }
+.journal .jr-note, .journal .jr-fine { margin: 8px 0; font-size: 12px; max-width: 110ch; }
+
+.journal .jr-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 8px 0 12px;
+}
+.journal .jr-tile { padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel-2); }
+.journal .jr-tile-label { color: var(--muted); font-size: 11px; }
+.journal .jr-tile-value { font-size: 17px; font-variant-numeric: tabular-nums; }
+
+.journal .jr-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+@media (max-width: 899.98px) { .journal .jr-cols { grid-template-columns: minmax(0, 1fr); } }
+.journal .jr-box { min-width: 0; margin-bottom: 12px; }
+.journal .jr-box h3 { margin: 0 0 6px; font-size: 13px; font-weight: 600; }
+.journal .jr-box .table-wrap { max-height: 320px; overflow-y: auto; margin-bottom: 8px; }
+.journal .jr-excursion { text-align: left; font-size: 12px; }
+
+.journal .jr-heat {
+  display: grid;
+  grid-template-columns: 34px repeat(24, minmax(0, 1fr));
+  gap: 2px;
+  align-items: center;
+}
+.journal .jr-heat-hour, .journal .jr-heat-day { font-size: 10px; color: var(--muted); text-align: center; }
+.journal .jr-heat-day { text-align: left; }
+.journal .jr-heat-cell {
+  display: block;
+  height: 22px;
+  border-radius: 2px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+}

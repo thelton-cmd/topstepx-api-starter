@@ -56,4 +56,4 @@ class BarUnit(IntEnum):
     DAY = 4
     WEEK = 5
     MONTH = 6
-    TICK = 7
+    TICK = 7  # AggregateBarUnit.Tick in the Swagger spec — unit_number = ticks per bar

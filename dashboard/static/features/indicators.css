@@ -1,0 +1,58 @@
+/* Indicator plugins and the volume profile (drawn by chart.js, which links this file itself).
+   style.css stays core-only; these rules only add to the chart's Indicators menu, status line,
+   legend and canvas. */
+
+.chart-ind-pop {
+  max-height: min(75vh, 680px);
+  overflow-y: auto;
+  max-width: min(700px, calc(100vw - 32px));
+}
+.chart-ind-pop .ind-row { flex-wrap: wrap; }
+.chart-ind-pop .ind-section {
+  margin-top: 4px;
+  padding: 8px 0 2px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.chart-ind-pop .ind-section .ind-path { text-transform: none; letter-spacing: 0; margin-left: 6px; opacity: 0.8; }
+.chart-ind-pop .ind-plugins .ind-row:last-of-type { border-bottom: 1px solid var(--line); }
+.chart-ind-pop .ind-plugins:empty { display: none; }
+.chart-ind-pop .ind-tag {
+  font-size: 11px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+}
+.chart-ind-pop .ind-params input[type="color"] {
+  width: 2.4em;
+  height: 1.7em;
+  padding: 0 2px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.chart-ind-pop .ind-params input[type="text"] { width: 7em; }
+.chart-ind-pop .ind-params select { max-width: 9em; }
+.chart-ind-pop .ind-note { padding: 6px 0; font-size: 12px; white-space: normal; }
+.chart-ind-pop .ind-error {
+  padding: 4px 0;
+  font-size: 12px;
+  color: var(--down);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.chart-ind-pop .ind-profile .ind-params { font-size: 12px; }
+
+.chart-controls .chart-status { white-space: normal; text-align: right; }
+.chart-controls .chart-status-ind:not(:empty)::before { content: " | "; color: var(--muted); }
+
+.chart-legend .swatch.dot { width: 8px; height: 8px; border-radius: 50%; }
+.chart-legend .swatch.block { width: 10px; height: 8px; }
+
+/* The volume profile: a canvas over the price pane, anchored to its right edge. It never takes
+   pointer events, so dragging, zooming and the crosshair behave exactly as without it. */
+.chart-canvas .vp-canvas { position: absolute; top: 0; left: 0; z-index: 3; pointer-events: none; }
+.chart-canvas .vp-canvas[hidden] { display: none; }

@@ -5,28 +5,23 @@ Pulls the last 2 hours of 5-minute bars. Note: the History endpoint allows
 most 20,000 bars per request — the kit automatically backs off and retries
 on HTTP 429, but keep your own polling modest.
 
-    python examples/03_historical_bars.py                      # defaults to first "ES" match
-    python examples/03_historical_bars.py CON.F.US.EP.U26      # specific contract
+    python examples/03_historical_bars.py                      # choose an active "ES" match
+    python examples/03_historical_bars.py CON.F.US.EP.Z26      # specific contract
 """
 
 import sys
 from datetime import datetime, timedelta, timezone
 
 from topstepx import BarUnit, TopstepXClient, TopstepXError
+from _safety import choose_active_contract
 
 
 # ── [find-contract] Pick a contract ─────────────────────────────────
 def main() -> None:
     with TopstepXClient() as client:
-        if len(sys.argv) > 1:
-            contract_id = sys.argv[1]
-        else:
-            contracts = client.search_contracts("ES")
-            if not contracts:
-                print("No ES contracts found — pass a contract ID explicitly.")
-                return
-            contract_id = contracts[0].id
-            print(f"Using first ES match: {contract_id}\n")
+        contract = choose_active_contract(client, sys.argv[1] if len(sys.argv) > 1 else "ES")
+        contract_id = contract.id
+        print(f"Using {contract.name} ({contract_id})\n")
 
         # ── [request-bars] Ask for two hours of 5-minute bars ───────
         end = datetime.now(timezone.utc)
@@ -59,4 +54,7 @@ if __name__ == "__main__":
         main()
     except TopstepXError as exc:
         print(f"Error: {exc}")
+        sys.exit(1)
+    except ValueError as exc:
+        print(f"Cannot continue: {exc}")
         sys.exit(1)

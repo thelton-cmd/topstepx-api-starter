@@ -1,6 +1,16 @@
 # Credentials — never commit your API key
 .env
 
+# Your data, written by examples 08 and 09 and the dashboard
+charts/
+journal/
+recordings/
+*.ndjson
+*.ndjson.gz
+
+# Local databases
+*.db
+
 # Python
 __pycache__/
 *.py[cod]

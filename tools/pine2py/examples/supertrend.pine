@@ -1,0 +1,26 @@
+//@version=5
+indicator("Supertrend", overlay=true)
+factor = input.float(3.0, "Factor", minval=0.1, step=0.1)
+atrLen = input.int(10, "ATR length", minval=1)
+
+// Built-in version.
+[builtIn, builtInDir] = ta.supertrend(factor, atrLen)
+
+// The same line written by hand with var, if and :=.
+atrValue = ta.atr(atrLen)
+upper = hl2 + factor * atrValue
+lower = hl2 - factor * atrValue
+var float finalUpper = na
+var float finalLower = na
+var int dir = 1
+if not na(atrValue)
+    finalUpper := na(finalUpper) or upper < finalUpper or close[1] > finalUpper ? upper : finalUpper
+    finalLower := na(finalLower) or lower > finalLower or close[1] < finalLower ? lower : finalLower
+    if dir == 1
+        dir := close > finalUpper ? -1 : 1
+    else
+        dir := close < finalLower ? 1 : -1
+line = na(atrValue) ? na : dir == -1 ? finalLower : finalUpper
+
+plot(builtIn, "Built-in", color=builtInDir < 0 ? color.green : color.red)
+plot(line, "By hand", color=dir == -1 ? color.green : color.red, linewidth=2)

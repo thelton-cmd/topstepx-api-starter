@@ -26,7 +26,10 @@ dev = [
 Repository = "https://github.com/thelton-cmd/topstepx-api-starter"
 
 [tool.setuptools.packages.find]
-include = ["topstepx*"]
+include = ["topstepx*", "dashboard*"]
+
+[tool.setuptools.package-data]
+dashboard = ["static/*", "static/features/*", "*.md"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

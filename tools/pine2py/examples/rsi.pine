@@ -1,0 +1,11 @@
+//@version=5
+indicator("RSI", overlay=false)
+length = input.int(14, "Length", minval=1)
+upperLevel = input.float(70.0, "Upper level")
+lowerLevel = input.float(30.0, "Lower level")
+src = input.source(close, "Source")
+value = ta.rsi(src, length)
+plot(value, "RSI", color=color.purple)
+hline(upperLevel, "Upper level", color=color.gray)
+hline(50, "Middle level", color=color.gray)
+hline(lowerLevel, "Lower level", color=color.gray)

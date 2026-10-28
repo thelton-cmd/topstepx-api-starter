@@ -14,6 +14,8 @@ whole API:
 from __future__ import annotations
 
 import time
+from datetime import datetime, timezone
+from typing import Any, Callable
 
 import httpx
 
@@ -33,18 +35,64 @@ class ApiHttp:
     ):
         self._tokens = tokens
         self._client = httpx.Client(base_url=settings.api_base, timeout=30.0, transport=transport)
+        self._observers: list[Callable[[dict], Any]] = []
+
+    def add_observer(self, callback: Callable[[dict], Any]) -> None:
+        """Register ``callback(record)`` to run after every REST call, successful or not.
+
+        ``record`` carries ``time`` (ISO, UTC), ``path``, ``request`` (the JSON body as sent),
+        ``status`` (HTTP status, or None if the request never got out), ``response`` (the parsed
+        envelope, or the raw text for a non-JSON/non-200 reply, cut to 2000 chars), ``error``
+        (message or None) and ``duration_ms``. The Authorization header is never included.
+        Observer exceptions are swallowed so an observer can never break a call.
+        """
+        self._observers.append(callback)
 
     def post(self, path: str, json: dict | None = None) -> dict:
+        payload = json or {}
+        meta: dict = {"status": None, "response": None}
+        started = time.perf_counter()
+        error: str | None = None
+        try:
+            return self._post(path, payload, meta)
+        except Exception as exc:
+            error = str(exc) or type(exc).__name__
+            raise
+        finally:
+            if self._observers:
+                record = {
+                    "time": datetime.now(timezone.utc).isoformat(),
+                    "path": path,
+                    "request": payload,
+                    "status": meta["status"],
+                    "response": meta["response"],
+                    "error": error,
+                    "duration_ms": round((time.perf_counter() - started) * 1000, 1),
+                }
+                for callback in list(self._observers):
+                    try:
+                        callback(record)
+                    except Exception:  # noqa: BLE001 - observers never break a call
+                        pass
+
+    def _post(self, path: str, payload: dict, meta: dict) -> dict:
         retried_auth = False
         rate_limit_tries = 0
 
         while True:
-            response = self._client.post(
-                path,
-                json=json or {},
-                headers={"Authorization": f"Bearer {self._tokens.get_token()}"},
-            )
+            try:
+                response = self._client.post(
+                    path,
+                    json=payload,
+                    headers={"Authorization": f"Bearer {self._tokens.get_token()}"},
+                )
+            except httpx.TransportError as exc:
+                raise TopstepXError(
+                    f"Could not reach the TopstepX API while calling {path}: {exc}. "
+                    "Check your internet connection and try again."
+                ) from exc
 
+            meta["status"] = response.status_code
             if response.status_code == 401:
                 if retried_auth:
                     raise AuthenticationError(
@@ -63,13 +111,35 @@ class ApiHttp:
                 continue
 
             if response.status_code != 200:
+                meta["response"] = response.text[:2000]
                 raise TopstepXError(
                     f"HTTP {response.status_code} from {path}: {response.text[:200]}"
                 )
 
-            body = response.json()
-            if isinstance(body, dict) and body.get("success") is False:
+            try:
+                body = response.json()
+            except ValueError as exc:
+                meta["response"] = response.text[:2000]
+                raise ApiError(
+                    path,
+                    "the API returned HTTP 200 but the response was not valid JSON; "
+                    "retry the request, and check the API status if it continues",
+                ) from exc
+
+            meta["response"] = body
+            if not isinstance(body, dict):
+                raise ApiError(
+                    path,
+                    f"expected a JSON object envelope, received {type(body).__name__}",
+                )
+            if body.get("success") is False:
                 raise ApiError.from_envelope(path, body)
+            if body.get("success") is not True:
+                raise ApiError(
+                    path,
+                    "response envelope is missing the required success=true field",
+                    body=body,
+                )
             return body
 
     def close(self) -> None:

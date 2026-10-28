@@ -1,6 +1,6 @@
 """Example 02 — search for tradable contracts.
 
-Contract IDs (like "CON.F.US.EP.U26") are what you pass to the
+Contract IDs (like "CON.F.US.EP.Z26") are what you pass to the
 historical-bars and market-data APIs. This example searches by text
 (the API returns up to 20 matches), or lists everything with --all.
 

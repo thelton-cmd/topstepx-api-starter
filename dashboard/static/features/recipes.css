@@ -1,0 +1,107 @@
+/* recipes.css - the Recipes header button and the "Prompt recipes" panel (features/recipes.js).
+   Uses the dark-theme variables from style.css (:root); nothing here touches core selectors. */
+
+.recipes-tool.open { border-color: var(--muted); background: var(--panel-2); }
+
+section.recipes-panel[hidden],
+.recipes [hidden] { display: none !important; }
+
+.recipes { display: flex; flex-direction: column; gap: 10px; }
+.recipes code {
+  font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0 4px;
+  overflow-wrap: anywhere;
+}
+
+.recipes-intro, .recipes-foot { margin: 0; color: var(--muted); font-size: 13px; max-width: 72em; }
+.recipes-foot { font-size: 12px; }
+
+.recipes-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.recipes-search { flex: 1 1 18em; max-width: 32em; padding: 5px 10px; }
+.recipes-count { color: var(--muted); font-size: 13px; margin-right: auto; }
+.recipes-status:empty { display: none; }
+
+.recipes-groups { display: flex; flex-direction: column; gap: 8px; }
+.recipes-group {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+}
+.recipes-group > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  list-style: none;
+}
+.recipes-group > summary::-webkit-details-marker { display: none; }
+.recipes-group > summary::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 5px solid var(--muted);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transition: transform 0.15s;
+}
+.recipes-group[open] > summary::before { transform: rotate(90deg); }
+.recipes-group > summary:hover { background: var(--panel-2); }
+.recipes-group-count {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0 7px;
+}
+
+.recipes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 12px 12px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+}
+.recipe {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.recipe-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.recipe-title { margin: 0; font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.35; }
+.recipe-copy { flex: 0 0 auto; white-space: nowrap; }
+.recipe-copy.done { background: var(--panel); color: var(--up); border-color: var(--up); }
+.recipe-summary { margin: 0; font-size: 13px; color: var(--text); }
+.recipe-touches { margin: 0; font-size: 12px; color: var(--muted); margin-top: auto; }
+.recipe-touches-label { color: var(--muted); font-weight: 600; }
+
+.recipe-prompt > summary { cursor: pointer; font-size: 12px; color: var(--focus); width: fit-content; }
+.recipe-prompt > summary:hover { text-decoration: underline; }
+.recipe-prompt pre {
+  margin: 6px 0 0;
+  padding: 8px 10px;
+  max-height: 260px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+/* Off-screen textarea used by the copy fallback. */
+.recipes-copy-area { position: fixed; top: -1000px; left: 0; width: 1px; height: 1px; opacity: 0; }

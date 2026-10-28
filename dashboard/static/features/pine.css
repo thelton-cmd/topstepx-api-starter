@@ -1,0 +1,64 @@
+/* pine.css - the "Pine Script to Python" panel and its header button (dashboard/static/features/pine.js). */
+
+.pine-btn.open { border-color: var(--muted); background: var(--panel-2); }
+
+section.pine-section[hidden] { display: none; }
+
+.pine .pine-intro { margin: 0 0 10px; color: var(--muted); font-size: 13px; max-width: 110ch; }
+
+.pine .pine-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+}
+@media (max-width: 899.98px) {
+  .pine .pine-cols { grid-template-columns: minmax(0, 1fr); }
+}
+.pine .pine-col { min-width: 0; }
+
+.pine .pine-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 6px; }
+.pine .pine-field { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.pine .pine-name { width: 14em; }
+.pine .pine-examples { max-width: 20em; }
+
+.pine .pine-source,
+.pine .pine-code {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 8px 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text);
+  font: 12px/1.45 ui-monospace, "Cascadia Mono", Consolas, Menlo, monospace;
+  tab-size: 4;
+}
+.pine .pine-source { min-height: 280px; resize: vertical; white-space: pre; overflow: auto; }
+.pine .pine-code { min-height: 120px; max-height: 420px; overflow: auto; white-space: pre; }
+
+.pine .pine-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+.pine .pine-status { font-size: 12px; }
+.pine .pine-status.ok { color: var(--up); }
+.pine .pine-status.warn { color: var(--warn); }
+.pine .pine-status.bad { color: var(--down); }
+
+.pine .pine-code-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 8px 0 4px; }
+.pine .pine-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.pine .pine-meta { font-size: 12px; }
+
+.pine .pine-messages:empty { display: none; }
+.pine .pine-note {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel-2);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.pine .pine-note.warn { border-color: var(--warn); }
+.pine .pine-note.bad { border-color: var(--down); }
+.pine .pine-note-title { font-weight: 600; margin-bottom: 2px; }
+.pine .pine-note.warn .pine-note-title { color: var(--warn); }
+.pine .pine-note.bad .pine-note-title { color: var(--down); }
+.pine .pine-note ul { margin: 0; padding-left: 18px; }

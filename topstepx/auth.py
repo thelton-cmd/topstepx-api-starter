@@ -24,6 +24,7 @@ class TokenManager:
 
     def __init__(self, settings: Settings, http_client: httpx.Client | None = None):
         self._settings = settings
+        self._owns_http = http_client is None
         # Own client with no auth header — avoids recursion with ApiHttp.
         self._http = http_client or httpx.Client(base_url=settings.api_base, timeout=30.0)
         self._lock = threading.Lock()
@@ -33,8 +34,8 @@ class TokenManager:
     def get_token(self) -> str:
         """Return a valid token, logging in or refreshing as needed.
 
-        Safe to call from any thread, and from pysignalr's
-        access_token_factory on every (re)connect.
+        Safe to call from any thread. The real-time hubs call it on every
+        connection attempt, so long-running streams pick up refreshed tokens.
         """
         with self._lock:
             now = datetime.now(timezone.utc)
@@ -58,26 +59,50 @@ class TokenManager:
             self._token = None
             self._expires_at = None
 
+    def close(self) -> None:
+        """Close the internally-created login client, if this manager owns it."""
+        if self._owns_http:
+            self._http.close()
+
     # -- internals (caller must hold self._lock) ----------------------------
 
     def _login_locked(self) -> str:
-        response = self._http.post(
-            "/Auth/loginKey",
-            json={"userName": self._settings.username, "apiKey": self._settings.api_key},
-        )
+        try:
+            response = self._http.post(
+                "/Auth/loginKey",
+                json={"userName": self._settings.username, "apiKey": self._settings.api_key},
+            )
+        except httpx.TransportError as exc:
+            raise TopstepXError(
+                f"Could not reach the TopstepX API login endpoint: {exc}. "
+                "Check your internet connection and try again."
+            ) from exc
         if response.status_code == 401:
             raise AuthenticationError()
         if response.status_code != 200:
             raise TopstepXError(
                 f"Login request failed with HTTP {response.status_code}: {response.text[:200]}"
             )
-        body = response.json()
-        if not body.get("success") or not body.get("token"):
+        try:
+            body = response.json()
+        except ValueError as exc:
             raise AuthenticationError(
-                f"Login rejected (errorCode={body.get('errorCode')}). {AuthenticationError.DEFAULT_HINT}"
+                "Login returned HTTP 200 but the response was not valid JSON. "
+                f"Retry the request. {AuthenticationError.DEFAULT_HINT}"
+            ) from exc
+        if not isinstance(body, dict):
+            raise AuthenticationError(
+                f"Login returned an unexpected {type(body).__name__} response. "
+                f"{AuthenticationError.DEFAULT_HINT}"
             )
-        self._store(body["token"])
-        return self._token  # type: ignore[return-value]
+        token = body.get("token")
+        if body.get("success") is not True or not isinstance(token, str) or not token:
+            raise AuthenticationError(
+                f"Login rejected (errorCode={body.get('errorCode')}). "
+                f"{AuthenticationError.DEFAULT_HINT}"
+            )
+        self._store(token)
+        return token
 
     def _validate_locked(self) -> str:
         try:
@@ -86,13 +111,15 @@ class TokenManager:
                 headers={"Authorization": f"Bearer {self._token}"},
             )
             body = response.json() if response.status_code == 200 else {}
-        except (httpx.HTTPError, ValueError):
+        except (httpx.TransportError, ValueError):
             body = {}
-        if body.get("success"):
+        if isinstance(body, dict) and body.get("success") is True:
             # The gateway may return a refreshed token; fall back to the current one.
-            self._store(body.get("newToken") or body.get("token") or self._token)
-            return self._token  # type: ignore[return-value]
-        # Validation failed — fall back to a fresh login.
+            token = body.get("newToken") or body.get("token") or self._token
+            if isinstance(token, str) and token:
+                self._store(token)
+                return token
+        # Validation failed or returned a malformed envelope — perform a fresh login.
         return self._login_locked()
 
     def _store(self, token: str) -> None:

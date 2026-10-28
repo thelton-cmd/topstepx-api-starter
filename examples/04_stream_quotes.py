@@ -4,36 +4,43 @@ Connects to the market hub and prints bid/ask/last as quotes arrive.
 Reconnects and resubscribes automatically if the connection drops.
 Press Ctrl+C to stop.
 
-    python examples/04_stream_quotes.py                      # defaults to first "ES" match
-    python examples/04_stream_quotes.py CON.F.US.EP.U26      # specific contract
+    python examples/04_stream_quotes.py                      # choose an active "ES" match
+    python examples/04_stream_quotes.py CON.F.US.EP.Z26      # specific contract
 """
 
 import asyncio
 import sys
 
 from topstepx import MarketHub, Quote, TopstepXClient, TopstepXError
+from _safety import choose_active_contract
 
 
 # ── [print-quote] The function that runs on every quote ─────────────
+latest: dict[str, float | None] = {"bid": None, "ask": None, "last": None}
+
+
+def fmt(price: float | None) -> str:
+    return f"{price:.2f}" if price is not None else "-"
+
+
 def print_quote(contract_id: str, quote: Quote) -> None:
-    bid = f"{quote.best_bid:.2f}" if quote.best_bid is not None else "-"
-    ask = f"{quote.best_ask:.2f}" if quote.best_ask is not None else "-"
-    last = f"{quote.last_price:.2f}" if quote.last_price is not None else "-"
-    print(f"{contract_id}  bid {bid:>10}   ask {ask:>10}   last {last:>10}")
+    # Quotes arrive as partial updates: each one carries only the fields
+    # that changed, so keep the last value seen for each field.
+    if quote.best_bid is not None:
+        latest["bid"] = quote.best_bid
+    if quote.best_ask is not None:
+        latest["ask"] = quote.best_ask
+    if quote.last_price is not None:
+        latest["last"] = quote.last_price
+    print(f"{contract_id}  bid {fmt(latest['bid']):>10}   ask {fmt(latest['ask']):>10}   last {fmt(latest['last']):>10}")
 
 
 # ── [find-contract] Log in and pick a contract ──────────────────────
 async def main() -> None:
     client = TopstepXClient()
 
-    if len(sys.argv) > 1:
-        contract_id = sys.argv[1]
-    else:
-        contracts = client.search_contracts("ES")
-        if not contracts:
-            print("No ES contracts found — pass a contract ID explicitly.")
-            return
-        contract_id = contracts[0].id
+    contract = choose_active_contract(client, sys.argv[1] if len(sys.argv) > 1 else "ES")
+    contract_id = contract.id
 
     # ── [connect] Connect and subscribe ─────────────────────────────
     hub = MarketHub(client.tokens)
@@ -62,4 +69,7 @@ if __name__ == "__main__":
         print("\nDisconnected cleanly.")
     except TopstepXError as exc:
         print(f"Error: {exc}")
+        sys.exit(1)
+    except ValueError as exc:
+        print(f"Cannot continue: {exc}")
         sys.exit(1)

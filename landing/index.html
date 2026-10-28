@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TopstepX API Starter Kit</title>
+<meta name="description" content="An open-source Python starter kit for the TopstepX API: one prompt in Claude Code gives you a working local dashboard, live market data, charting, a DOM and a Practice-only order ticket.">
+<meta property="og:title" content="TopstepX API Starter Kit">
+<meta property="og:description" content="One prompt. A working local dashboard for the TopstepX API, built in Python, open source.">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --bg: #0f1412; --panel: #151c18; --panel-2: #1b2420; --line: #22302a;
+    --text: #d7e0dc; --muted: #8aa096; --up: #26a69a; --down: #ef5350; --warn: #f5b041;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--up); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  header { padding: 18px 0; border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .brand { font-weight: 700; letter-spacing: 0.02em; }
+  .brand span { color: var(--muted); font-weight: 400; }
+  nav a { color: var(--muted); text-decoration: none; margin-left: 18px; font-size: 14px; }
+  nav a:hover { color: var(--text); }
+  .hero { padding: 64px 0 40px; }
+  .hero h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.1; margin: 0 0 16px; }
+  .hero p.lead { font-size: 19px; color: var(--muted); max-width: 720px; margin: 0 0 28px; }
+  .btn { display: inline-block; padding: 11px 18px; border-radius: 6px; font-weight: 600; text-decoration: none; border: 1px solid var(--line); color: var(--text); background: var(--panel-2); margin-right: 10px; margin-bottom: 10px; }
+  .btn.primary { background: var(--up); border-color: var(--up); color: #06110e; }
+  .btn:hover { border-color: var(--muted); }
+  .prompt { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; margin: 28px 0 0; position: relative; }
+  .prompt .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px; }
+  .prompt pre { margin: 0; white-space: pre-wrap; word-break: break-word; font: 14px/1.5 ui-monospace, Consolas, "SFMono-Regular", Menlo, monospace; color: var(--text); }
+  .prompt button { position: absolute; top: 14px; right: 14px; font: inherit; font-size: 13px; padding: 5px 10px; border-radius: 5px; border: 1px solid var(--line); background: var(--bg); color: var(--text); cursor: pointer; }
+  .prompt button:hover { border-color: var(--muted); }
+  .shot { margin: 40px 0 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--panel); }
+  .shot img { display: block; width: 100%; height: auto; }
+  .shot figcaption { padding: 10px 14px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+  section { padding: 44px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 18px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; }
+  .card h3 { margin: 0 0 6px; font-size: 16px; }
+  .card p { margin: 0; color: var(--muted); font-size: 14px; }
+  ol.steps { margin: 0; padding-left: 20px; color: var(--muted); }
+  ol.steps li { margin-bottom: 10px; }
+  ol.steps b { color: var(--text); }
+  code { font: 13px ui-monospace, Consolas, Menlo, monospace; background: var(--panel-2); padding: 1px 5px; border-radius: 4px; }
+  .note { background: var(--panel); border-left: 3px solid var(--warn); border-radius: 6px; padding: 12px 16px; color: var(--muted); font-size: 14px; }
+  footer { padding: 28px 0 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  footer p { margin: 6px 0; }
+  @media (max-width: 640px) { .hero { padding: 40px 0 28px; } nav a { margin-left: 12px; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">TopstepX API Starter Kit <span>/ open source, Python</span></div>
+    <nav>
+      <a href="#start">Start</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#inside">What's inside</a>
+      <a href="https://github.com/thelton-cmd/topstepx-api-starter">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero" id="start">
+    <h1>One prompt. A working dashboard for the TopstepX API.</h1>
+    <p class="lead">Open Claude Code on your own computer, paste the prompt below, and the kit installs itself, verifies your credentials without ever seeing them in the chat, pulls your first live data, and opens a local dashboard: charts with indicators, a DOM you can trade from, live quotes, and a Practice-only order ticket. Then ask for whatever you want to build next.</p>
+    <a class="btn primary" href="https://github.com/thelton-cmd/topstepx-api-starter">View on GitHub</a>
+    <a class="btn" href="https://github.com/thelton-cmd/topstepx-api-starter#readme">Read the README</a>
+
+    <div class="prompt">
+      <div class="label">Paste this into Claude Code</div>
+      <pre id="prompt-text">Set up the TopstepX API starter kit for me. Clone https://github.com/thelton-cmd/topstepx-api-starter.git, open the folder, read AGENTS.md, and follow its "First-time setup" steps. Tell me when I need to do something myself, and never ask me to paste my API key into this chat.</pre>
+      <button type="button" id="copy">Copy</button>
+    </div>
+
+    <figure class="shot" id="dashboard">
+      <img src="dashboard.png" alt="The local dashboard: candlestick chart with EMA, VWAP and Supertrend overlays, a depth-of-market ladder, a tick tape and a Practice-only order ticket." width="1600" height="1000">
+      <figcaption>The local dashboard, running on your own machine at 127.0.0.1. Example data shown.</figcaption>
+    </figure>
+  </div>
+
+  <section>
+    <h2>How the setup goes</h2>
+    <ol class="steps">
+      <li><b>You need</b> Python 3.10 or newer, Claude Code (desktop app or terminal) or another coding agent, and a TopstepX account with the API Access subscription. A free Practice Account is where the order ticket works.</li>
+      <li><b>The agent</b> clones the kit, creates a virtual environment, installs the package, and runs the offline test suite.</li>
+      <li><b>You</b> type your username and API key into the <code>.env</code> file yourself. The key never passes through the chat, and the kit never prints it.</li>
+      <li><b>The agent</b> runs the setup checker, fetches your first bars, streams quotes for a few seconds, and starts the dashboard in your browser.</li>
+      <li><b>Then you build.</b> "Add a 2-hour chart for NQ." "Alert me when ES crosses the number I type." "Export today's fills to CSV every evening." The kit ships 25 copy-paste prompts to start from.</li>
+    </ol>
+  </section>
+
+  <section id="inside">
+    <h2>What's inside</h2>
+    <div class="grid">
+      <div class="card"><h3>A small Python package</h3><p>Auth with automatic token refresh, every REST endpoint as a five-line method, and both real-time SignalR hubs with reconnect and resubscribe. Offline tests with a mocked API.</p></div>
+      <div class="card"><h3>Numbered examples</h3><p>From "check my setup" through contract search, bars, quotes, depth, account events, charting, a trade journal and a risk monitor with your own limits.</p></div>
+      <div class="card"><h3>The local dashboard</h3><p>Chart with on-demand history and an indicators menu, click-to-trade DOM with your working orders, tape, account dropdown, fills plotted on the chart, and a Practice-only order ticket with the confirmation style you choose.</p></div>
+      <div class="card"><h3>See the API call</h3><p>A panel that shows the exact REST request and response, or hub message, behind what you just did, with copy-as-curl and copy-as-Python. Every click is a lesson.</p></div>
+      <div class="card"><h3>Record and replay</h3><p>Save the live stream and play it back at speed into the whole dashboard, for practice and for testing outside market hours.</p></div>
+      <div class="card"><h3>Indicator plugins and Pine Script</h3><p>Drop a Python file into a folder and it appears in the chart menu. Paste a Pine Script indicator and get that Python file generated for you.</p></div>
+      <div class="card"><h3>Alerts and your own guardrails</h3><p>Price alerts you set, fill notifications, and a daily loss number or contract cap of your own that pauses order entry on the dashboard.</p></div>
+      <div class="card"><h3>Journal and session stats</h3><p>Fills paired into round trips, per-day and per-contract figures, a weekday-by-hour heatmap, excursion from 1-minute bars, CSV export.</p></div>
+      <div class="card"><h3>Built for agents</h3><p>An AGENTS.md with ground rules the agent follows: run on your device, never handle your key, never place an order unless you ask, never invent a trading rule.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Good to know</h2>
+    <div class="note">
+      This kit demonstrates API mechanics. It contains no trading strategy, signal or recommendation, and nothing in it is financial advice. Every figure it shows is an approximation built from API data. Topstep's Terms of Use require API activity to come from your own personal device, so run the kit locally, not on a VPS or cloud machine. Topstep's account rules are enforced by Topstep. Trading futures involves substantial risk of loss.
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>MIT licensed. Source and issues on <a href="https://github.com/thelton-cmd/topstepx-api-starter">GitHub</a>.</p>
+    <p>TopstepX and Topstep are trademarks of Topstep LLC. TradingView Lightweight Charts is used under the Apache License 2.0. Claude Code is a product of Anthropic.</p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("copy").addEventListener("click", async () => {
+    const text = document.getElementById("prompt-text").textContent;
+    const btn = document.getElementById("copy");
+    try { await navigator.clipboard.writeText(text); btn.textContent = "Copied"; }
+    catch (err) { const r = document.createRange(); r.selectNodeContents(document.getElementById("prompt-text")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Select and copy"; }
+    setTimeout(() => { btn.textContent = "Copy"; }, 2000);
+  });
+</script>
+</body>
+</html>

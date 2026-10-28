@@ -101,12 +101,16 @@ class Order:
     id: int
     account_id: int | None = None
     contract_id: str | None = None
+    symbol_id: str | None = None
     status: int | None = None  # interpret with enums.OrderStatus
     type: int | None = None  # interpret with enums.OrderType
     side: int | None = None  # interpret with enums.OrderSide
     size: int | None = None
     limit_price: float | None = None
     stop_price: float | None = None
+    fill_volume: int | None = None
+    filled_price: float | None = None
+    custom_tag: str | None = None
     creation_timestamp: datetime | None = None
     update_timestamp: datetime | None = None
     raw: dict = field(default_factory=dict, repr=False)
@@ -117,12 +121,16 @@ class Order:
             id=d.get("id", 0),
             account_id=d.get("accountId"),
             contract_id=d.get("contractId"),
+            symbol_id=d.get("symbolId"),
             status=d.get("status"),
             type=d.get("type"),
             side=d.get("side"),
             size=d.get("size"),
             limit_price=d.get("limitPrice"),
             stop_price=d.get("stopPrice"),
+            fill_volume=d.get("fillVolume"),
+            filled_price=d.get("filledPrice"),
+            custom_tag=d.get("customTag"),
             creation_timestamp=_parse_time(d.get("creationTimestamp")),
             update_timestamp=_parse_time(d.get("updateTimestamp")),
             raw=d,
@@ -134,6 +142,7 @@ class Position:
     id: int
     account_id: int | None = None
     contract_id: str | None = None
+    contract_display_name: str | None = None
     type: int | None = None  # interpret with enums.PositionType (1 = long, 2 = short)
     size: int | None = None
     average_price: float | None = None
@@ -146,6 +155,7 @@ class Position:
             id=d.get("id", 0),
             account_id=d.get("accountId"),
             contract_id=d.get("contractId"),
+            contract_display_name=d.get("contractDisplayName"),
             type=d.get("type"),
             size=d.get("size"),
             average_price=d.get("averagePrice"),
@@ -164,8 +174,10 @@ class Trade:
     side: int | None = None
     profit_and_loss: float | None = None  # None for a half-turn (opening) trade
     fees: float | None = None
+    commissions: float | None = None
     voided: bool | None = None
     order_id: int | None = None
+    fill_id: int | None = None
     creation_timestamp: datetime | None = None
     raw: dict = field(default_factory=dict, repr=False)
 
@@ -180,8 +192,10 @@ class Trade:
             side=d.get("side"),
             profit_and_loss=d.get("profitAndLoss"),
             fees=d.get("fees"),
+            commissions=d.get("commissions"),
             voided=d.get("voided"),
             order_id=d.get("orderId"),
+            fill_id=d.get("fillId"),
             creation_timestamp=_parse_time(d.get("creationTimestamp")),
             raw=d,
         )
@@ -193,6 +207,8 @@ class Trade:
 @dataclass
 class Quote:
     symbol: str | None = None
+    symbol_id: str | None = None
+    symbol_name: str | None = None
     best_bid: float | None = None
     best_ask: float | None = None
     last_price: float | None = None
@@ -203,12 +219,15 @@ class Quote:
     low: float | None = None
     volume: float | None = None
     last_updated: datetime | None = None
+    timestamp: datetime | None = None
     raw: dict = field(default_factory=dict, repr=False)
 
     @classmethod
     def from_api(cls, d: dict) -> "Quote":
         return cls(
             symbol=d.get("symbol"),
+            symbol_id=d.get("symbolId"),
+            symbol_name=d.get("symbolName"),
             best_bid=d.get("bestBid"),
             best_ask=d.get("bestAsk"),
             last_price=d.get("lastPrice"),
@@ -219,6 +238,7 @@ class Quote:
             low=d.get("low"),
             volume=d.get("volume"),
             last_updated=_parse_time(d.get("lastUpdated")),
+            timestamp=_parse_time(d.get("timestamp")),
             raw=d,
         )
 

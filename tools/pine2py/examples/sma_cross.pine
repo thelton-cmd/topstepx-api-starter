@@ -1,0 +1,13 @@
+//@version=5
+indicator("SMA cross", overlay=true)
+fastLen = input.int(9, "Fast length", minval=1)
+slowLen = input.int(21, "Slow length", minval=2)
+src = input.source(close, "Source")
+fast = ta.sma(src, fastLen)
+slow = ta.sma(src, slowLen)
+plot(fast, "Fast SMA", color=color.orange)
+plot(slow, "Slow SMA", color=color.blue, linewidth=2)
+overCond = ta.crossover(fast, slow)
+underCond = ta.crossunder(fast, slow)
+plotshape(overCond, "Fast over slow", style=shape.circle, location=location.belowbar, color=color.green, text="fast over slow")
+plotshape(underCond, "Fast under slow", style=shape.circle, location=location.abovebar, color=color.red, text="fast under slow")

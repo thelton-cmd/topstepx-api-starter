@@ -1,0 +1,101 @@
+/* apilog.css - the "API calls" panel and its header button. Uses the core design tokens from style.css. */
+
+#feature-apilog[hidden], .apilog-section [hidden] { display: none !important; }
+
+/* -- header button ------------------------------------------------------------ */
+
+.apilog-tool { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 2px 8px; }
+.apilog-tool .apilog-count {
+  min-width: 1.8em; padding: 0 6px; border-radius: 8px; font-size: 11px; line-height: 16px; text-align: center;
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--muted);
+}
+.apilog-tool.open { border-color: var(--muted); background: var(--panel-2); }
+.apilog-tool.open .apilog-count { color: var(--text); }
+.apilog-tool.near-limit { border-color: var(--warn); }
+.apilog-tool.near-limit .apilog-count { color: var(--warn); border-color: var(--warn); }
+
+/* -- panel chrome --------------------------------------------------------------- */
+
+.apilog-section { font-size: 13px; }
+.apilog-section code {
+  font: 12px/1.4 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  color: var(--text);
+}
+.apilog-intro { font-size: 12px; margin-bottom: 8px; }
+.apilog-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 8px; }
+.apilog-tabs { display: inline-flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.apilog-tabs .apilog-tab { border: 0; border-radius: 0; padding: 3px 14px; background: var(--bg); color: var(--muted); }
+.apilog-tabs .apilog-tab + .apilog-tab { border-left: 1px solid var(--line); }
+.apilog-tabs .apilog-tab.active { background: var(--panel-2); color: var(--text); box-shadow: inset 0 -2px 0 var(--up); }
+.apilog-filter { width: 18em; max-width: 100%; }
+.apilog-errors-only { display: inline-flex; align-items: center; font-size: 12px; color: var(--muted); }
+.apilog-spacer { flex: 1 1 auto; }
+.apilog-status { font-size: 12px; }
+.apilog-status.error { color: var(--down); }
+.apilog-pause.active { border-color: var(--warn); color: var(--warn); }
+.apilog-limits { font-size: 12px; margin-bottom: 6px; }
+.apilog-limits b { color: var(--text); font-weight: 600; }
+.apilog-limits.warn b { color: var(--warn); }
+.apilog-hub-note { font-size: 12px; margin-bottom: 8px; }
+.apilog-hub-off { font-size: 12px; margin-bottom: 8px; }
+.apilog-sub {
+  margin: 14px 0 6px; font-size: 12px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--muted);
+}
+
+/* -- tables --------------------------------------------------------------------- */
+
+.apilog-scroll { max-height: 460px; overflow-y: auto; }
+.apilog-ring-wrap { max-height: 320px; }
+.apilog-table { font-size: 12px; }
+.apilog-table th, .apilog-table td { text-align: left; padding: 3px 6px; }
+.apilog-table th.num, .apilog-table td.num { text-align: right; }
+.apilog-table thead th { position: sticky; top: 0; background: var(--panel); z-index: 1; }
+.apilog-table td.apilog-time { color: var(--muted); }
+.apilog-table td.apilog-path { color: var(--text); font-weight: 500; }
+.apilog-row { cursor: pointer; }
+.apilog-row:hover td { background: var(--panel-2); }
+.apilog-row:focus-visible { outline: 1px solid var(--focus); outline-offset: -1px; }
+.apilog-row.expanded td { background: var(--panel-2); }
+.apilog-caret { display: inline-block; width: 1em; color: var(--muted); transition: transform 0.12s; }
+.apilog-row.expanded .apilog-caret { transform: rotate(90deg); }
+.apilog-ellipsis {
+  display: inline-block; max-width: 34vw; overflow: hidden; text-overflow: ellipsis;
+  vertical-align: bottom; color: var(--muted);
+}
+.apilog-tag {
+  display: inline-block; padding: 0 4px; border-radius: 3px; font-size: 10px; line-height: 14px;
+  border: 1px solid var(--warn); color: var(--warn); vertical-align: 1px;
+}
+.apilog-summarised td:first-child { box-shadow: inset 3px 0 0 var(--muted); }
+.apilog-kit { color: var(--muted) !important; }
+
+/* Calls that failed (HTTP error, success=false, network error) are tinted. */
+.apilog-row.apilog-err td { background: rgba(239, 83, 80, 0.10); }
+.apilog-row.apilog-err td.apilog-path, .apilog-row.apilog-err td.num { color: var(--down); }
+.apilog-row.apilog-err:hover td, .apilog-row.apilog-err.expanded td { background: rgba(239, 83, 80, 0.18); }
+
+/* -- expanded rows --------------------------------------------------------------- */
+
+.apilog-detail > td { padding: 0; background: var(--bg); white-space: normal; }
+.apilog-detail-body { padding: 8px 10px 10px; border-left: 2px solid var(--up); }
+.apilog-err + .apilog-detail .apilog-detail-body { border-left-color: var(--down); }
+.apilog-meta { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.apilog-meta span:first-child { color: var(--text); }
+.apilog-error-text { color: var(--down); font-size: 12px; margin-bottom: 6px; white-space: pre-wrap; }
+.apilog-note { color: var(--warn); font-size: 12px; margin: 4px 0 6px; }
+.apilog-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin-bottom: 3px; }
+.apilog-json { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+@media (max-width: 899.98px) {
+  .apilog-json { grid-template-columns: minmax(0, 1fr); }
+  .apilog-ellipsis { max-width: 60vw; }
+}
+.apilog-section pre {
+  margin: 0; padding: 8px 10px; max-height: 320px; overflow: auto;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 4px;
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  color: var(--text); white-space: pre; text-align: left;
+}
+.apilog-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+.apilog-copy-status { font-size: 12px; }
+.apilog-snippet { margin-top: 6px !important; }

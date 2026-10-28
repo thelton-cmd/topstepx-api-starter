@@ -1,0 +1,17 @@
+/* hotkeys.css - feature trading_tools: the Hotkeys settings section and the ticket's "Hotkeys on" badge. */
+
+.ticket .ticket-badges { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 6px; }
+.ticket .hotkeys-badge { font-size: 12px; cursor: help; }
+.ticket .ticket-tools { margin-top: 0; }
+
+.settings-pop .hotkeys-map { width: 100%; border-collapse: collapse; margin: 4px 0; font-size: 12px; }
+.settings-pop .hotkeys-map td {
+  padding: 2px 4px; border-bottom: 1px solid var(--line, #22302a); vertical-align: top;
+  text-align: left; white-space: normal;   /* the core table style right-aligns and never wraps */
+}
+.settings-pop .hotkeys-map td:first-child { white-space: nowrap; width: 1%; }
+.settings-pop .hotkeys-map kbd {
+  display: inline-block; padding: 0 5px; border: 1px solid var(--line, #22302a); border-radius: 3px;
+  background: var(--bg, #0f1412); font: inherit; font-size: 11px;
+}
+.settings-pop .hotkeys-note.hotkeys-warn { color: var(--warn, #f5b041); }

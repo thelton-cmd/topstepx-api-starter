@@ -1,0 +1,27 @@
+/* replay.css - the replay banner, the REC header tool and the settings help. Core tokens from style.css. */
+
+.replay-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  padding: 6px 12px;
+  background: var(--panel-2); border-bottom: 2px solid var(--warn); color: var(--warn);
+  font-size: 13px; font-weight: 600;
+}
+.replay-banner[hidden], .replay-rec[hidden] { display: none !important; }
+.replay-banner .replay-label { flex: 1 1 280px; min-width: 0; overflow-wrap: anywhere; }
+.replay-banner button.on { border-color: var(--warn); color: var(--warn); }
+.replay-banner button { font-weight: 600; }
+.replay-banner .replay-speeds { display: inline-flex; gap: 4px; }
+.replay-banner .replay-slider { flex: 2 1 200px; min-width: 120px; accent-color: var(--warn); }
+.replay-banner .replay-pos { color: var(--text); font-weight: 400; white-space: nowrap; }
+
+.replay-rec {
+  display: inline-block; max-width: 28ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  vertical-align: middle; padding: 2px 8px; border-radius: 6px; font-size: 12px;
+  border: 1px solid var(--down); color: var(--down);
+}
+.replay-rec::before {
+  content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%;
+  background: var(--down); vertical-align: middle;
+}
+.replay-help { font-size: 12px; max-width: 48ch; margin: 4px 0; }

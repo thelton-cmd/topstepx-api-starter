@@ -1,0 +1,35 @@
+/* alerts feature: panel, event feed and the guard banner */
+.alerts-btn.open { border-color: var(--muted); background: var(--panel-2); }
+.alerts-btn .alerts-count { color: var(--warn); }
+
+#feature-alerts .al-note { font-size: 12px; margin-bottom: 8px; }
+#feature-alerts .al-block { padding: 8px 0; border-top: 1px solid var(--line); }
+#feature-alerts .al-block:first-of-type { border-top: 0; }
+#feature-alerts .al-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+#feature-alerts form { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 13px; }
+#feature-alerts form label { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+#feature-alerts .al-loss, #feature-alerts .al-cap { width: 7em; }
+#feature-alerts .al-price { width: 7.5em; }
+#feature-alerts .al-text { width: 12em; }
+#feature-alerts .al-guard-status { font-size: 12px; margin-top: 6px; }
+#feature-alerts .al-guard-status.blocked { color: var(--warn); }
+#feature-alerts table { width: 100%; font-size: 12px; border-collapse: collapse; }
+#feature-alerts th { text-align: left; color: var(--muted); font-weight: 500; padding: 2px 6px; }
+#feature-alerts td { padding: 2px 6px; border-top: 1px solid var(--line); }
+#feature-alerts tr.fired td { color: var(--muted); }
+#feature-alerts .al-actions { text-align: right; white-space: nowrap; }
+#feature-alerts .al-feed { max-height: 14em; overflow: auto; font-size: 12px; }
+#feature-alerts .al-ev { padding: 2px 0; border-top: 1px solid var(--line); }
+#feature-alerts .al-ev.alert { color: var(--warn); }
+#feature-alerts .al-ev.fill { color: var(--text); }
+#feature-alerts .al-ev.guard { color: var(--down); }
+#feature-alerts .al-error { color: var(--down); font-size: 12px; margin-top: 6px; }
+#feature-alerts .al-error:empty { display: none; }
+
+.al-banner[hidden] { display: none; }
+.al-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 150;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 8px 16px; font-size: 13px;
+  background: #3a2a0a; color: var(--warn); border-bottom: 1px solid var(--warn);
+}

@@ -4,14 +4,15 @@ One SignalR connection carries multiple subscription types. Here we
 subscribe to both market depth updates and executed-trade ticks for
 the same contract. Press Ctrl+C to stop.
 
-    python examples/05_stream_depth.py                      # defaults to first "ES" match
-    python examples/05_stream_depth.py CON.F.US.EP.U26      # specific contract
+    python examples/05_stream_depth.py                      # choose an active "ES" match
+    python examples/05_stream_depth.py CON.F.US.EP.Z26      # specific contract
 """
 
 import asyncio
 import sys
 
 from topstepx import DepthEntry, MarketHub, MarketTrade, TopstepXClient, TopstepXError
+from _safety import choose_active_contract
 
 
 # ── [callbacks] Two callbacks, two event types ──────────────────────
@@ -33,14 +34,8 @@ def print_depth(contract_id: str, entries: list[DepthEntry]) -> None:
 async def main() -> None:
     client = TopstepXClient()
 
-    if len(sys.argv) > 1:
-        contract_id = sys.argv[1]
-    else:
-        contracts = client.search_contracts("ES")
-        if not contracts:
-            print("No ES contracts found — pass a contract ID explicitly.")
-            return
-        contract_id = contracts[0].id
+    contract = choose_active_contract(client, sys.argv[1] if len(sys.argv) > 1 else "ES")
+    contract_id = contract.id
 
     # ── [subscribe-both] One connection, two subscriptions ──────────
     hub = MarketHub(client.tokens)
@@ -68,4 +63,7 @@ if __name__ == "__main__":
         print("\nDisconnected cleanly.")
     except TopstepXError as exc:
         print(f"Error: {exc}")
+        sys.exit(1)
+    except ValueError as exc:
+        print(f"Cannot continue: {exc}")
         sys.exit(1)

@@ -1,0 +1,11 @@
+//@version=5
+indicator("MACD", overlay=false)
+fastLen = input.int(12, "Fast length", minval=1)
+slowLen = input.int(26, "Slow length", minval=1)
+avgLen = input.int(9, "Average length", minval=1)
+src = input.source(close, "Source")
+[macdLine, avgLine, hist] = ta.macd(src, fastLen, slowLen, avgLen)
+plot(hist, "Histogram", style=plot.style_histogram, color=hist >= 0 ? color.teal : color.red)
+plot(macdLine, "MACD", color=color.blue)
+plot(avgLine, "Average line", color=color.orange)
+hline(0, "Zero", color=color.gray)

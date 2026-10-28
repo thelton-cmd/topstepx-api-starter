@@ -1,0 +1,24 @@
+# fly.io config for the landing page. Deploy from the repo root with:
+#   fly deploy --config landing/fly.toml --dockerfile landing/Dockerfile landing
+app = "topstepx-api-starter"
+primary_region = "ord"
+
+[build]
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "5s"
+    method = "GET"
+    path = "/healthz"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

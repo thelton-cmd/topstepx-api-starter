@@ -1,0 +1,20 @@
+//@version=5
+indicator("Custom function", overlay=true)
+len = input.int(10, "Length", minval=1)
+
+// A user function that returns a tuple. Each call gets its own state, so the
+// three calls below never share history.
+channel(src, n) =>
+    mid = ta.sma(src, n)
+    spread = ta.highest(src, n) - ta.lowest(src, n)
+    [mid, spread / 2]
+
+[midClose, halfClose] = channel(close, len)
+[midHigh, halfHigh] = channel(high, len)
+[midClose2, halfClose2] = channel(close, len * 2)
+
+plot(midClose, "Mid (close)", color=color.orange)
+plot(midClose + halfClose, "Upper (close)", color=color.gray)
+plot(midClose - halfClose, "Lower (close)", color=color.gray)
+plot(midHigh, "Mid (high)", color=color.teal)
+plot(midClose2, "Mid (close, 2x)", color=color.blue)

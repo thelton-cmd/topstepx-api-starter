@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="dashboard-token" content="__TOKEN__">
+<title>TopstepX dashboard</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>TopstepX dashboard</h1>
+  <label class="muted" for="account-select">Account</label>
+  <select id="account-select" aria-label="Account"></select>
+  <span id="account-info" class="muted"></span>
+  <span id="badge-market" class="badge">market hub</span>
+  <span id="badge-user" class="badge">user hub</span>
+  <span id="updated" class="muted"></span>
+  <span id="header-tools"></span>
+  <span id="settings-root"></span>
+</header>
+<div class="notice">Order entry is only enabled on Practice Accounts. P&amp;L is an approximation built from API data.
+  Realized P&amp;L counts fills since <span id="since">-</span>. Times are UTC.</div>
+<div id="error" hidden></div>
+<div id="toasts" aria-live="polite"></div>
+<main>
+  <section class="span-12">
+    <h2>Today</h2>
+    <div class="tiles" id="tiles"></div>
+  </section>
+  <section class="span-12">
+    <h2>Chart</h2>
+    <div id="chart-root"></div>
+  </section>
+  <section class="span-8">
+    <h2>Depth and tape</h2>
+    <div class="dom-tape">
+      <div id="dom-root" class="scroll-panel"></div>
+      <div id="tape-root" class="scroll-panel"></div>
+    </div>
+  </section>
+  <section class="span-4 fit-content">
+    <h2>Order ticket</h2>
+    <div id="ticket-root"></div>
+  </section>
+  <section class="span-12">
+    <div class="row">
+      <h2>Quotes</h2>
+      <form id="watch-form" autocomplete="off">
+        <input id="watch-input" type="text" placeholder="add contract, e.g. NQ or CON.F.US.ENQ.Z26" aria-label="Contract to watch">
+        <button type="submit">Watch</button>
+        <span id="watch-status" class="muted"></span>
+      </form>
+    </div>
+    <div id="quotes"></div>
+  </section>
+  <section class="span-6">
+    <h2>Open positions</h2>
+    <div id="positions"></div>
+  </section>
+  <section class="span-6">
+    <h2>Open orders</h2>
+    <div id="orders"></div>
+  </section>
+  <section class="span-12">
+    <h2>Fills</h2>
+    <div id="trades"></div>
+  </section>
+</main>
+<!-- Lightweight Charts 5.2.1 (Apache-2.0, TradingView), vendored so the chart works without the CDN;
+     the file is byte-identical to the pinned build (same sha384). If it is missing, the CDN copy is tried. -->
+<script src="/static/vendor/lightweight-charts.standalone.production.js"
+        onerror="var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js';s.integrity='sha384-KkYqTZlM13Zya6fVUF3IGCBOQ1ehFeJVVgxaVvD/0MebineF9EI8Jkd3NnWNChqN';s.crossOrigin='anonymous';document.head.appendChild(s);"></script>
+<script type="module" src="/static/app.js"></script>
+</body>
+</html>
